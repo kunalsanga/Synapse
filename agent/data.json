@@ -1,0 +1,248 @@
+{
+  "job-ea0621aa": {
+    "request": {
+      "job_description": "\n    We are looking for a Senior Software Engineer with 5+ years of experience in Python, \n    React, and AWS. The role is based in San Francisco and involves building scalable \n    web applications. The ideal candidate should have experience with machine learning \n    and cloud infrastructure.\n    ",
+      "max_candidates": 5,
+      "job_id": null
+    },
+    "response": {
+      "job_id": "job-ea0621aa",
+      "candidates_found": 5,
+      "top_candidates": [
+        {
+          "name": "Umesh Soni",
+          "linkedin_url": "https://in.linkedin.com/in/ddumeshsoni",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hi Umesh, I came across your profile and was impressed by your skills in Python, React, and AWS, especially given your experience with Gin \u2013 a framework I also admire.  While the Senior Software Engineer role in San Francisco requires 5+ years of experience, I noticed your mid-level experience and strong foundation in these technologies.",
+          "headline": "Umesh Soni - Junior Python React Full Stack developer",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "react",
+            "python",
+            "aws",
+            "r",
+            "scala",
+            "machine learning"
+          ],
+          "companies": []
+        },
+        {
+          "name": "Yash Kathrotiya",
+          "linkedin_url": "https://in.linkedin.com/in/yash-kathrotiya",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hi Yash, I came across your profile and was impressed by your skills in Python, React, and AWS \u2013 particularly your experience with Gin (a fascinating framework!).  Given your mid-level experience and demonstrated expertise in these technologies, I thought you might be interested in a Senior Software Engineer role we have open at [Company Name] in San Francisco.",
+          "headline": "Yash Kathrotiya - Full Stack Developer \u2013 Python, React, AWS",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "react",
+            "python",
+            "aws",
+            "r",
+            "scala",
+            "machine learning"
+          ],
+          "companies": []
+        },
+        {
+          "name": "Chandru M",
+          "linkedin_url": "https://in.linkedin.com/in/chandru23",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hi Chandru, I came across your profile and was impressed by your skills in Python, React, and AWS \u2013 particularly your experience with Gin (a great choice!).  Seeing your background as a Python and React. js developer, I thought your expertise would align well with a Senior Software Engineer position we have open in San Francisco.",
+          "headline": "Chandru M - PYTHON AND REACT.JS DEVELOPER",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "react",
+            "python",
+            "aws",
+            "r",
+            "scala",
+            "machine learning"
+          ],
+          "companies": []
+        },
+        {
+          "name": "jaymin patel",
+          "linkedin_url": "https://in.linkedin.com/in/jaymin-patel-53911019b",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hi Jaymin, I came across your profile and was impressed by your experience with Python, React, and AWS, especially given your work at eSparkBiz.  Your skills in Gin and Spark also caught my eye \u2013 these are highly relevant to the kind of scalable web applications we build at [Your Company Name].",
+          "headline": "jaymin patel - Python React Developer - eSparkBiz",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "react",
+            "python",
+            "spark",
+            "aws",
+            "r",
+            "scala",
+            "machine learning"
+          ],
+          "companies": []
+        },
+        {
+          "name": "Vinod Dangi",
+          "linkedin_url": "https://in.linkedin.com/in/vinod-dangi-722503110",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hi Vinod, I came across your profile and was impressed by your experience with Python, React, and AWS, especially given your work at THOUGHTWIN IT.  Your skills in Gin and R are also quite interesting, suggesting a strong foundation in both backend and data science.",
+          "headline": "Vinod Dangi - python React Developer - THOUGHTWIN IT ...",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "react",
+            "python",
+            "aws",
+            "r",
+            "scala",
+            "machine learning"
+          ],
+          "companies": []
+        }
+      ],
+      "search_metadata": {
+        "total_profiles_found": 5,
+        "enriched_candidates": 5,
+        "scored_candidates": 5,
+        "search_timestamp": "2025-06-29T01:29:18.515747",
+        "job_description_length": 300,
+        "ai_scoring_used": true
+      }
+    },
+    "timestamp": "2025-06-29T01:29:18.515876"
+  },
+  "job-7a4efa73": {
+    "request": {
+      "job_description": "Senior Software Engineer with Python and AWS experience in California",
+      "max_candidates": 3,
+      "job_id": null
+    },
+    "response": {
+      "job_id": "job-7a4efa73",
+      "candidates_found": 3,
+      "top_candidates": [
+        {
+          "name": "Ganesh Kumar",
+          "linkedin_url": "https://in.linkedin.com/in/ganeshmmm112",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hello Ganesh, I came across your profile and was impressed by your experience as an AWS Python Dev Lead at Tata Consultancy Services, particularly your expertise in Python, AWS, and your demonstrated skills with R and Gin.  Given your senior-level experience leading development teams, I believe your strategic thinking and leadership would be a valuable asset at [Your Company Name].",
+          "headline": "Ganesh Kumar - AWS Python Dev Lead - Tata Consultancy ...",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "r",
+            "aws",
+            "python"
+          ],
+          "companies": []
+        },
+        {
+          "name": "Prashanth G",
+          "linkedin_url": "https://in.linkedin.com/in/prashanth-g-b68a1a271",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hi Prashanth, I came across your profile and was impressed by your experience as a Python and AWS Developer at Deloitte, particularly your skills with R and Gin.  Given your mid-level experience and expertise in these technologies, I believe your skillset aligns well with a Senior Software Engineer role we have open in California.",
+          "headline": "Prashanth G - Python AWS Developer - Deloitte",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "r",
+            "aws",
+            "python"
+          ],
+          "companies": []
+        },
+        {
+          "name": "LinkedIn Profile",
+          "linkedin_url": "https://www.linkedin.com/in/wendymitchell",
+          "fit_score": 5.0,
+          "score_breakdown": {
+            "education": 5.0,
+            "trajectory": 5.0,
+            "company": 5.0,
+            "skills": 5.0,
+            "location": 5.0,
+            "tenure": 5.0
+          },
+          "outreach_message": "Hi [LinkedIn Profile Name], I came across your profile and was impressed by your experience with gin, R, and AWS, especially given your background at LinkedIn.  The combination of those skills, particularly your Python expertise, aligns well with the Senior Software Engineer role we have open in California.",
+          "headline": "LinkedIn Profile",
+          "location": "Unknown",
+          "skills": [
+            "gin",
+            "r",
+            "aws",
+            "python"
+          ],
+          "companies": [
+            "linkedin"
+          ]
+        }
+      ],
+      "search_metadata": {
+        "total_profiles_found": 3,
+        "enriched_candidates": 3,
+        "scored_candidates": 3,
+        "search_timestamp": "2025-06-29T01:31:12.673572",
+        "job_description_length": 69,
+        "ai_scoring_used": true
+      }
+    },
+    "timestamp": "2025-06-29T01:31:12.673678"
+  }
+}
