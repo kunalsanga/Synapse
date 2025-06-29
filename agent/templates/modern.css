@@ -1,0 +1,313 @@
+/* Ultra-Performance Optimized UI - Minimal Animations */
+
+/* Only essential animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Disable all heavy effects */
+* {
+    will-change: auto !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Minimal navbar */
+.navbar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.navbar-brand {
+    /* No animations */
+}
+
+.navbar-brand:hover {
+    /* No hover effects */
+}
+
+.navbar-brand i {
+    /* No animations */
+}
+
+/* Minimal form controls */
+.form-control {
+    border: 2px solid var(--border) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Minimal buttons */
+.btn {
+    /* No effects */
+}
+
+.btn:hover {
+    /* No hover effects */
+}
+
+/* Minimal tabs */
+.tab {
+    /* No effects */
+}
+
+.tab:hover {
+    /* No hover effects */
+}
+
+/* Minimal candidate cards */
+.candidate-card {
+    position: relative !important;
+    overflow: hidden !important;
+    animation: fadeIn 0.2s ease !important;
+}
+
+.candidate-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: var(--primary) !important;
+}
+
+.candidate-card:hover {
+    /* No hover effects */
+}
+
+/* Minimal score bars */
+.score-fill {
+    /* No transitions */
+}
+
+/* Minimal skill tags */
+.skill-tag {
+    /* No effects */
+}
+
+.skill-tag:hover {
+    /* No hover effects */
+}
+
+/* Minimal detail items */
+.detail-item {
+    /* No effects */
+}
+
+.detail-item:hover {
+    /* No hover effects */
+}
+
+.detail-item i {
+    /* No effects */
+}
+
+.detail-item:hover i {
+    /* No effects */
+}
+
+/* Minimal outreach message */
+.outreach-message {
+    /* No effects */
+}
+
+/* Minimal main content */
+.main-content {
+    /* No effects */
+}
+
+.main-content:hover {
+    /* No hover effects */
+}
+
+/* Minimal stat cards */
+.stat-card {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.stat-card:hover {
+    /* No hover effects */
+}
+
+.stat-number {
+    /* No animations */
+}
+
+/* Minimal alerts */
+.alert {
+    animation: fadeIn 0.2s ease !important;
+}
+
+/* Success alert styling */
+.alert-success {
+    background: #10b981 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.alert-info {
+    background: #3b82f6 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.alert-error {
+    background: #ef4444 !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Minimal loading spinner */
+.spinner {
+    animation: spin 1s linear infinite !important;
+}
+
+/* Minimal form progress */
+.form-progress-bar {
+    /* No transitions */
+}
+
+/* Minimal floating action button */
+.fab {
+    /* No effects */
+}
+
+.fab:hover {
+    /* No hover effects */
+}
+
+/* Minimal scroll to top */
+.scroll-top {
+    /* No effects */
+}
+
+.scroll-top:hover {
+    /* No hover effects */
+}
+
+/* Minimal tooltips */
+.tooltip::after {
+    /* No transitions */
+}
+
+.tooltip:hover::after {
+    /* No effects */
+}
+
+/* Minimal badges */
+.demo-badge {
+    background: #f59e0b !important;
+    color: white !important;
+    padding: 2px 6px !important;
+    border-radius: 8px !important;
+    font-size: 0.6rem !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    margin-left: 6px !important;
+}
+
+.real-badge {
+    background: #10b981 !important;
+    color: white !important;
+    padding: 2px 6px !important;
+    border-radius: 8px !important;
+    font-size: 0.6rem !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    margin-left: 6px !important;
+}
+
+/* Minimal navbar links */
+.nav-link {
+    position: relative !important;
+}
+
+.nav-link::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 0 !important;
+    height: 2px !important;
+    background: var(--primary) !important;
+}
+
+.nav-link:hover::after {
+    width: 100% !important;
+}
+
+.nav-link:hover {
+    /* No hover effects */
+}
+
+/* Minimal hero section */
+.hero h1 {
+    /* No animations */
+}
+
+.hero p {
+    /* No animations */
+}
+
+/* Minimal content header */
+.content-header {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.content-header h2,
+.content-header p {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Minimal footer */
+.footer {
+    position: relative !important;
+}
+
+.footer p {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    /* Disable all effects on mobile */
+    .candidate-card {
+        animation: none !important;
+    }
+    
+    .navbar-brand i {
+        animation: none !important;
+    }
+    
+    .candidate-score {
+        animation: none !important;
+    }
+    
+    .demo-badge, .real-badge {
+        animation: none !important;
+    }
+    
+    .spinner {
+        animation: none !important;
+    }
+} 

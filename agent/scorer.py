@@ -1,5 +1,6 @@
 """
-Fit score logic for candidate evaluation
+Enhanced Fit Score Logic for Synapse Hackathon
+Follows the exact scoring rubric provided in the challenge
 """
 import re
 import json
@@ -14,7 +15,36 @@ class CandidateScorer:
             genai.configure(api_key=config.GEMINI_API_KEY)
             self.gemini_client = genai.GenerativeModel(config.GEMINI_MODEL)
         
-        self.weights = config.FIT_SCORE_WEIGHTS
+        # Hackathon scoring weights (exact from requirements)
+        self.weights = {
+            'education': 0.20,      # 20%
+            'trajectory': 0.20,     # 20%
+            'company': 0.15,        # 15%
+            'skills': 0.25,         # 25% (experience match)
+            'location': 0.10,       # 10%
+            'tenure': 0.10          # 10%
+        }
+        
+        # Elite schools for education scoring
+        self.elite_schools = {
+            'mit', 'stanford', 'harvard', 'caltech', 'berkeley', 'uc berkeley',
+            'carnegie mellon', 'cmu', 'princeton', 'yale', 'columbia', 'upenn',
+            'cornell', 'brown', 'dartmouth', 'duke', 'northwestern', 'georgia tech',
+            'gatech', 'university of michigan', 'ucla', 'usc', 'university of illinois',
+            'uiuc', 'university of texas', 'ut austin', 'university of washington',
+            'uw', 'university of wisconsin', 'university of maryland', 'umd'
+        }
+        
+        # Top tech companies for company scoring
+        self.top_tech_companies = {
+            'google', 'alphabet', 'microsoft', 'apple', 'amazon', 'meta', 'facebook',
+            'netflix', 'tesla', 'nvidia', 'intel', 'amd', 'oracle', 'salesforce',
+            'adobe', 'paypal', 'stripe', 'square', 'airbnb', 'uber', 'lyft',
+            'twitter', 'linkedin', 'github', 'spotify', 'slack', 'zoom', 'dropbox',
+            'palantir', 'databricks', 'snowflake', 'mongodb', 'elastic', 'confluent',
+            'hashicorp', 'gitlab', 'atlassian', 'jira', 'confluence', 'notion',
+            'figma', 'canva', 'discord', 'twitch', 'roblox', 'unity', 'epic games'
+        }
     
     def score_candidates(self, candidates: List[Dict], job_description: str) -> List[Dict]:
         """
@@ -48,19 +78,10 @@ class CandidateScorer:
     
     def _score_single_candidate(self, candidate: Dict, job_description: str) -> Dict:
         """
-        Score a single candidate using AI and rule-based scoring
+        Score a single candidate using enhanced rule-based scoring
         """
-        # Get AI-based scoring if available
-        ai_scores = self._get_ai_scores(candidate, job_description)
-        
-        # Get rule-based scoring as fallback
-        rule_scores = self._get_rule_based_scores(candidate, job_description)
-        
-        # Combine scores (prefer AI if available)
-        if ai_scores:
-            score_breakdown = ai_scores
-        else:
-            score_breakdown = rule_scores
+        # Get rule-based scoring (more reliable for hackathon)
+        score_breakdown = self._get_enhanced_rule_based_scores(candidate, job_description)
         
         # Calculate weighted fit score
         fit_score = self._calculate_weighted_score(score_breakdown)
@@ -71,254 +92,304 @@ class CandidateScorer:
         
         return candidate
     
-    def _get_ai_scores(self, candidate: Dict, job_description: str) -> Dict:
+    def _get_enhanced_rule_based_scores(self, candidate: Dict, job_description: str) -> Dict:
         """
-        Get AI-based scores using Gemini
-        """
-        if not self.gemini_client:
-            return {}
-        
-        try:
-            # Prepare candidate data for AI scoring
-            name = candidate.get('name', 'Unknown')
-            headline = candidate.get('headline', '')
-            location = candidate.get('location', 'Unknown')
-            skills = ', '.join(candidate.get('skills', []))
-            companies = ', '.join(candidate.get('companies', []))
-            education = ', '.join(candidate.get('education', []))
-            
-            experience_summary = f"{headline} at {companies}" if companies else headline
-            
-            prompt = config.SCORING_PROMPT_TEMPLATE.format(
-                name=name,
-                headline=headline,
-                location=location,
-                experience=experience_summary,
-                job_description=job_description
-            )
-            
-            response = self.gemini_client.generate_content(prompt)
-            
-            # Parse AI response
-            ai_response = response.text
-            scores = self._parse_ai_scoring_response(ai_response)
-            
-            return scores
-            
-        except Exception as e:
-            print(f"AI scoring failed: {e}")
-            return {}
-    
-    def _parse_ai_scoring_response(self, response: str) -> Dict:
-        """
-        Parse AI scoring response to extract scores
+        Enhanced rule-based scoring following hackathon rubric exactly
         """
         scores = {}
         
-        # Look for score patterns in the response
-        score_patterns = {
-            'education': r'education[:\s]*(\d+(?:\.\d+)?)',
-            'trajectory': r'trajectory[:\s]*(\d+(?:\.\d+)?)',
-            'company': r'company[:\s]*(\d+(?:\.\d+)?)',
-            'skills': r'(?:skills|experience)[:\s]*(\d+(?:\.\d+)?)',
-            'location': r'location[:\s]*(\d+(?:\.\d+)?)',
-            'tenure': r'tenure[:\s]*(\d+(?:\.\d+)?)'
-        }
+        # Education score (20%)
+        scores['education'] = self._score_education_enhanced(candidate, job_description)
         
-        for category, pattern in score_patterns.items():
-            match = re.search(pattern, response, re.IGNORECASE)
-            if match:
-                try:
-                    score = float(match.group(1))
-                    scores[category] = min(max(score, 1.0), 10.0)  # Clamp between 1-10
-                except ValueError:
-                    scores[category] = 5.0  # Default score
-            else:
-                scores[category] = 5.0  # Default score
+        # Career trajectory score (20%)
+        scores['trajectory'] = self._score_trajectory_enhanced(candidate, job_description)
+        
+        # Company relevance score (15%)
+        scores['company'] = self._score_company_relevance_enhanced(candidate, job_description)
+        
+        # Skills/Experience match score (25%)
+        scores['skills'] = self._score_skills_match_enhanced(candidate, job_description)
+        
+        # Location match score (10%)
+        scores['location'] = self._score_location_match_enhanced(candidate, job_description)
+        
+        # Tenure score (10%)
+        scores['tenure'] = self._score_tenure_enhanced(candidate, job_description)
         
         return scores
     
-    def _get_rule_based_scores(self, candidate: Dict, job_description: str) -> Dict:
+    def _score_education_enhanced(self, candidate: Dict, job_description: str) -> float:
         """
-        Get rule-based scores as fallback when AI is not available
+        Enhanced education scoring (20% weight)
+        - Elite schools (MIT, Stanford, etc.): 9-10
+        - Strong schools: 7-8
+        - Standard universities: 5-6
+        - Clear progression: 8-10
         """
-        scores = {}
-        
-        # Education score
-        scores['education'] = self._score_education(candidate, job_description)
-        
-        # Career trajectory score
-        scores['trajectory'] = self._score_trajectory(candidate, job_description)
-        
-        # Company relevance score
-        scores['company'] = self._score_company_relevance(candidate, job_description)
-        
-        # Skills/Experience match score
-        scores['skills'] = self._score_skills_match(candidate, job_description)
-        
-        # Location match score
-        scores['location'] = self._score_location_match(candidate, job_description)
-        
-        # Tenure score
-        scores['tenure'] = self._score_tenure(candidate, job_description)
-        
-        return scores
-    
-    def _score_education(self, candidate: Dict, job_description: str) -> float:
-        """
-        Score education relevance (1-10)
-        """
-        education = candidate.get('education', [])
+        education = ' '.join(candidate.get('education', [])).lower()
         job_lower = job_description.lower()
+        
+        # Check for elite schools
+        if any(school in education for school in self.elite_schools):
+            return 9.5
         
         # Check for advanced degrees
-        if any(degree in education for degree in ['phd', 'doctorate']):
+        if any(degree in education for degree in ['phd', 'doctorate', 'ph.d']):
             return 9.0
-        elif any(degree in education for degree in ['masters', 'ms', 'ma']):
+        elif any(degree in education for degree in ['masters', 'ms', 'ma', 'm.s', 'm.a']):
             return 8.0
-        elif any(degree in education for degree in ['bachelors', 'bs', 'ba']):
+        elif any(degree in education for degree in ['bachelors', 'bs', 'ba', 'b.s', 'b.a']):
             return 7.0
         
-        # Check for relevant fields
-        relevant_fields = ['computer science', 'cs', 'engineering', 'mathematics', 'statistics']
-        if any(field in education for field in relevant_fields):
+        # Check for relevant technical fields
+        tech_fields = ['computer science', 'cs', 'engineering', 'mathematics', 'statistics', 
+                      'data science', 'machine learning', 'artificial intelligence', 'ai',
+                      'software engineering', 'information technology', 'it']
+        if any(field in education for field in tech_fields):
             return 8.0
         
-        # Check if job requires specific education
-        if any(word in job_lower for word in ['phd', 'doctorate', 'masters', 'degree']):
-            return 4.0  # Lower score if education is required but not found
-        
-        return 6.0  # Default score
-    
-    def _score_trajectory(self, candidate: Dict, job_description: str) -> float:
-        """
-        Score career trajectory (1-10)
-        """
-        trajectory = candidate.get('career_trajectory', 'unknown')
-        experience_level = candidate.get('experience_level', 'unknown')
-        
-        # Upward trajectory is good
-        if trajectory == 'upward':
-            return 9.0
-        elif trajectory == 'stable':
-            return 7.0
-        elif trajectory == 'early_career':
+        # Check for business/management fields (relevant for some roles)
+        business_fields = ['business', 'management', 'economics', 'finance', 'mba']
+        if any(field in education for field in business_fields):
             return 6.0
         
-        # Experience level scoring
-        if experience_level == 'senior':
-            return 8.0
-        elif experience_level == 'mid':
-            return 7.0
-        elif experience_level == 'junior':
-            return 5.0
+        # Check if job requires specific education
+        if any(word in job_lower for word in ['phd', 'doctorate', 'masters', 'degree required']):
+            return 4.0  # Lower score if education is required but not found
         
-        return 6.0
+        return 5.0  # Default score for standard universities
     
-    def _score_company_relevance(self, candidate: Dict, job_description: str) -> float:
+    def _score_trajectory_enhanced(self, candidate: Dict, job_description: str) -> float:
         """
-        Score company relevance (1-10)
+        Enhanced career trajectory scoring (20% weight)
+        - Steady growth: 6-8
+        - Limited progression: 3-5
         """
         companies = candidate.get('companies', [])
+        experience_level = candidate.get('experience_level', 'unknown').lower()
+        headline = candidate.get('headline', '').lower()
+        
+        # Check for upward progression in titles
+        senior_titles = ['senior', 'lead', 'principal', 'staff', 'architect', 'director', 'manager', 'head']
+        junior_titles = ['junior', 'associate', 'entry', 'graduate', 'intern']
+        
+        senior_count = sum(1 for title in senior_titles if title in headline)
+        junior_count = sum(1 for title in junior_titles if title in headline)
+        
+        # More senior titles indicate better trajectory
+        if senior_count > junior_count:
+            return 8.0
+        elif senior_count == junior_count:
+            return 6.0
+        else:
+            return 4.0
+    
+    def _score_company_relevance_enhanced(self, candidate: Dict, job_description: str) -> float:
+        """
+        Enhanced company relevance scoring (15% weight)
+        - Top tech companies: 9-10
+        - Relevant industry: 7-8
+        - Any experience: 5-6
+        """
+        companies = ' '.join(candidate.get('companies', [])).lower()
         job_lower = job_description.lower()
         
-        if not companies:
-            return 5.0
+        # Check for top tech companies
+        if any(company in companies for company in self.top_tech_companies):
+            return 9.5
         
-        # Tier 1 companies (high score)
-        tier1_companies = ['google', 'microsoft', 'apple', 'amazon', 'meta', 'netflix']
-        if any(company in companies for company in tier1_companies):
-            return 9.0
+        # Check for relevant industry keywords
+        industry_keywords = {
+            'fintech': ['fintech', 'financial', 'banking', 'payments', 'stripe', 'paypal', 'square'],
+            'ai/ml': ['ai', 'machine learning', 'ml', 'artificial intelligence', 'deep learning'],
+            'cloud': ['aws', 'azure', 'gcp', 'cloud', 'kubernetes', 'docker'],
+            'startup': ['startup', 'venture', 'funded', 'series a', 'series b'],
+            'enterprise': ['enterprise', 'saas', 'b2b', 'enterprise software']
+        }
         
-        # Tier 2 companies (good score)
-        tier2_companies = ['uber', 'lyft', 'airbnb', 'twitter', 'linkedin', 'salesforce']
-        if any(company in companies for company in tier2_companies):
+        # Extract industry from job description
+        job_industry = None
+        for industry, keywords in industry_keywords.items():
+            if any(keyword in job_lower for keyword in keywords):
+                job_industry = industry
+                break
+        
+        # Check if candidate has relevant industry experience
+        if job_industry and any(keyword in companies for keyword in industry_keywords[job_industry]):
             return 8.0
         
-        # Check if job mentions specific companies
-        for company in companies:
-            if company.lower() in job_lower:
-                return 8.5
+        # Check for any tech company experience
+        tech_indicators = ['software', 'tech', 'technology', 'digital', 'online', 'web', 'app']
+        if any(indicator in companies for indicator in tech_indicators):
+            return 7.0
         
-        return 6.0
+        return 5.0  # Default for any experience
     
-    def _score_skills_match(self, candidate: Dict, job_description: str) -> float:
+    def _score_skills_match_enhanced(self, candidate: Dict, job_description: str) -> float:
         """
-        Score skills/experience match (1-10)
+        Enhanced skills/experience match scoring (25% weight)
+        - Perfect skill match: 9-10
+        - Strong overlap: 7-8
+        - Some relevant skills: 5-6
         """
-        skills = candidate.get('skills', [])
+        skills = ' '.join(candidate.get('skills', [])).lower()
+        headline = candidate.get('headline', '').lower()
         job_lower = job_description.lower()
         
-        if not skills:
-            return 3.0
+        # Extract key skills from job description
+        job_skills = self._extract_skills_from_job_description(job_description)
+        
+        if not job_skills:
+            return 5.0  # Default if no skills found
         
         # Count matching skills
-        matching_skills = 0
-        for skill in skills:
-            if skill.lower() in job_lower:
-                matching_skills += 1
+        matches = 0
+        for skill in job_skills:
+            if skill in skills or skill in headline:
+                matches += 1
         
-        # Calculate score based on match percentage
-        if len(skills) > 0:
-            match_percentage = matching_skills / len(skills)
-            return 3.0 + (match_percentage * 7.0)  # Scale from 3-10
+        # Calculate match percentage
+        match_percentage = matches / len(job_skills)
         
-        return 5.0
+        if match_percentage >= 0.8:
+            return 9.5  # Perfect match
+        elif match_percentage >= 0.6:
+            return 8.0  # Strong overlap
+        elif match_percentage >= 0.4:
+            return 7.0  # Good overlap
+        elif match_percentage >= 0.2:
+            return 6.0  # Some relevant skills
+        else:
+            return 4.0  # Poor match
     
-    def _score_location_match(self, candidate: Dict, job_description: str) -> float:
+    def _extract_skills_from_job_description(self, job_description: str) -> List[str]:
         """
-        Score location match (1-10)
+        Extract key skills from job description
         """
-        location = candidate.get('location', 'Unknown').lower()
         job_lower = job_description.lower()
         
-        if location == 'unknown':
-            return 5.0
+        # Common tech skills
+        tech_skills = [
+            'python', 'java', 'javascript', 'typescript', 'react', 'angular', 'vue',
+            'node.js', 'django', 'flask', 'fastapi', 'spring', 'express', 'ruby',
+            'go', 'rust', 'c++', 'c#', '.net', 'php', 'sql', 'postgresql', 'mysql',
+            'mongodb', 'redis', 'aws', 'azure', 'gcp', 'docker', 'kubernetes',
+            'terraform', 'jenkins', 'git', 'github', 'gitlab', 'ci/cd', 'agile',
+            'scrum', 'machine learning', 'ml', 'ai', 'deep learning', 'tensorflow',
+            'pytorch', 'scikit-learn', 'pandas', 'numpy', 'spark', 'hadoop',
+            'kafka', 'elasticsearch', 'microservices', 'api', 'rest', 'graphql',
+            'frontend', 'backend', 'full stack', 'devops', 'data science'
+        ]
         
-        # Check for exact location matches
-        if location in job_lower:
+        found_skills = []
+        for skill in tech_skills:
+            if skill in job_lower:
+                found_skills.append(skill)
+        
+        return found_skills
+    
+    def _score_location_match_enhanced(self, candidate: Dict, job_description: str) -> float:
+        """
+        Enhanced location match scoring (10% weight)
+        - Exact city: 10
+        - Same metro: 8
+        - Remote-friendly: 6
+        """
+        location = candidate.get('location', '').lower()
+        job_lower = job_description.lower()
+        
+        # Extract location from job description
+        job_location = self._extract_location_from_job_description(job_description)
+        
+        if not job_location:
+            return 6.0  # Default for remote-friendly
+        
+        # Check for exact city match
+        if job_location in location:
             return 10.0
         
-        # Check for state/region matches
-        states = ['california', 'new york', 'texas', 'florida', 'washington', 'massachusetts']
-        for state in states:
-            if state in location and state in job_lower:
-                return 9.0
+        # Check for same metro area
+        metro_areas = {
+            'san francisco': ['sf', 'bay area', 'silicon valley', 'palo alto', 'mountain view', 'san mateo'],
+            'new york': ['nyc', 'manhattan', 'brooklyn', 'queens', 'new jersey', 'nj'],
+            'seattle': ['bellevue', 'redmond', 'kirkland', 'washington'],
+            'austin': ['texas', 'tx'],
+            'boston': ['cambridge', 'somerville', 'massachusetts', 'ma'],
+            'los angeles': ['la', 'santa monica', 'culver city', 'california', 'ca']
+        }
         
-        # Check for remote work indicators
-        if any(word in job_lower for word in ['remote', 'work from home', 'wfh']):
-            return 8.0  # Good for remote positions
+        for metro, cities in metro_areas.items():
+            if metro in job_location and any(city in location for city in cities):
+                return 8.0
+            if any(city in job_location for city in cities) and any(city in location for city in cities):
+                return 8.0
         
-        return 6.0
+        # Check for remote-friendly indicators
+        if any(word in job_lower for word in ['remote', 'work from home', 'wfh', 'anywhere']):
+            return 6.0
+        
+        return 4.0  # Poor location match
     
-    def _score_tenure(self, candidate: Dict, job_description: str) -> float:
+    def _extract_location_from_job_description(self, job_description: str) -> str:
         """
-        Score tenure/stability (1-10)
+        Extract location from job description
         """
-        tenure = candidate.get('tenure_estimate', 'unknown')
         job_lower = job_description.lower()
         
-        if tenure == '5+ years':
-            return 9.0
-        elif tenure == '2-5 years':
-            return 7.0
-        elif tenure == '0-2 years':
-            return 5.0
+        # Common tech hubs
+        locations = [
+            'san francisco', 'new york', 'seattle', 'austin', 'boston', 'los angeles',
+            'chicago', 'denver', 'atlanta', 'miami', 'dallas', 'houston', 'phoenix',
+            'portland', 'nashville', 'salt lake city', 'minneapolis', 'detroit'
+        ]
         
-        # Check if job requires specific experience
-        if any(word in job_lower for word in ['senior', 'lead', 'principal', '5+ years']):
-            return 4.0  # Lower score for senior roles if tenure is unknown
+        for location in locations:
+            if location in job_lower:
+                return location
         
-        return 6.0
+        return ''
+    
+    def _score_tenure_enhanced(self, candidate: Dict, job_description: str) -> float:
+        """
+        Enhanced tenure scoring (10% weight)
+        - 2-3 years average: 9-10
+        - 1-2 years: 6-8
+        - Job hopping: 3-5
+        """
+        companies = candidate.get('companies', [])
+        experience_years = candidate.get('experience_years', 0)
+        
+        # Count companies to detect job hopping
+        company_count = len(companies) if companies else 1
+        
+        # Calculate average tenure
+        if company_count > 0:
+            avg_tenure = experience_years / company_count
+        else:
+            avg_tenure = experience_years
+        
+        # Score based on tenure patterns
+        if avg_tenure >= 2.0 and avg_tenure <= 3.0:
+            return 9.5  # Ideal tenure
+        elif avg_tenure >= 1.5 and avg_tenure < 2.0:
+            return 8.0  # Good tenure
+        elif avg_tenure >= 1.0 and avg_tenure < 1.5:
+            return 7.0  # Acceptable tenure
+        elif avg_tenure >= 0.5 and avg_tenure < 1.0:
+            return 6.0  # Short tenure
+        elif company_count > 3 and avg_tenure < 1.0:
+            return 3.0  # Job hopping
+        else:
+            return 5.0  # Default
     
     def _calculate_weighted_score(self, score_breakdown: Dict) -> float:
         """
-        Calculate weighted fit score from individual scores
+        Calculate weighted fit score based on hackathon rubric
         """
         total_score = 0.0
         
-        for category, score in score_breakdown.items():
-            weight = self.weights.get(category, 0.0)
+        for category, weight in self.weights.items():
+            score = score_breakdown.get(category, 5.0)
             total_score += score * weight
         
         return round(total_score, 2)
@@ -327,30 +398,14 @@ class CandidateScorer:
         """
         Generate explanation for candidate's score
         """
-        score_breakdown = candidate.get('score_breakdown', {})
+        breakdown = candidate.get('score_breakdown', {})
         fit_score = candidate.get('fit_score', 0)
         
-        if not score_breakdown:
-            return f"Overall fit score: {fit_score}/10"
+        explanation = f"Overall Fit Score: {fit_score}/10\n\n"
+        explanation += "Score Breakdown:\n"
         
-        explanation_parts = [f"Overall fit score: {fit_score}/10"]
+        for category, score in breakdown.items():
+            weight = self.weights.get(category, 0) * 100
+            explanation += f"- {category.title()} ({weight}%): {score}/10\n"
         
-        # Add top strengths
-        strengths = []
-        for category, score in score_breakdown.items():
-            if score >= 8.0:
-                strengths.append(f"{category.title()} ({score})")
-        
-        if strengths:
-            explanation_parts.append(f"Strengths: {', '.join(strengths)}")
-        
-        # Add areas for improvement
-        improvements = []
-        for category, score in score_breakdown.items():
-            if score <= 5.0:
-                improvements.append(f"{category.title()} ({score})")
-        
-        if improvements:
-            explanation_parts.append(f"Areas for improvement: {', '.join(improvements)}")
-        
-        return " | ".join(explanation_parts) 
+        return explanation 

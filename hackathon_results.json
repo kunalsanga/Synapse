@@ -1,0 +1,294 @@
+{
+  "job_id": "hackathon-20637844",
+  "candidates_found": 10,
+  "top_candidates": [
+    {
+      "name": "Ganesh Kumar",
+      "linkedin_url": "https://in.linkedin.com/in/ganeshmmm112",
+      "fit_score": 7.43,
+      "score_breakdown": {
+        "education": 8.0,
+        "trajectory": 8.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Ganesh, I came across your profile and was impressed by your strong education from ma, strong trajectory, excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Ganesh Kumar - AWS Python Dev Lead - Tata Consultancy ...",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "aws",
+        "pytorch",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": [
+        "ma"
+      ]
+    },
+    {
+      "name": "LinkedIn Profile",
+      "linkedin_url": "https://www.linkedin.com/in/wendymitchell",
+      "fit_score": 7.1,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 6.0,
+        "company": 9.5,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi LinkedIn, I came across your profile and was impressed by your impressive company experience at linkedin, excellent skills including python, ai, gin. Your experience at linkedin particularly caught my attention. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "LinkedIn Profile",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "pytorch",
+        "machine learning",
+        "r"
+      ],
+      "companies": [
+        "linkedin"
+      ],
+      "education": []
+    },
+    {
+      "name": "Yash Kathrotiya",
+      "linkedin_url": "https://in.linkedin.com/in/yash-kathrotiya",
+      "fit_score": 6.43,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 6.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Yash, I came across your profile and was impressed by your excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Yash Kathrotiya - Full Stack Developer \u2013 Python, React, AWS",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "aws",
+        "machine learning",
+        "pytorch",
+        "react",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    },
+    {
+      "name": "Chandru M",
+      "linkedin_url": "https://in.linkedin.com/in/chandru23",
+      "fit_score": 6.43,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 6.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Chandru, I came across your profile and was impressed by your excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Chandru M - PYTHON AND REACT.JS DEVELOPER",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "pytorch",
+        "react",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    },
+    {
+      "name": "jaymin patel",
+      "linkedin_url": "https://in.linkedin.com/in/jaymin-patel-53911019b",
+      "fit_score": 6.43,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 6.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi jaymin, I came across your profile and was impressed by your excellent skills including spark, python, ai. Your expertise in spark, python, ai aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "jaymin patel - Python React Developer - eSparkBiz",
+      "location": "Unknown",
+      "skills": [
+        "spark",
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "pytorch",
+        "react",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    },
+    {
+      "name": "Vinod Dangi",
+      "linkedin_url": "https://in.linkedin.com/in/vinod-dangi-722503110",
+      "fit_score": 6.43,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 6.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Vinod, I came across your profile and was impressed by your excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Vinod Dangi - python React Developer - THOUGHTWIN IT ...",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "pytorch",
+        "react",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    },
+    {
+      "name": "Prashanth G",
+      "linkedin_url": "https://in.linkedin.com/in/prashanth-g-b68a1a271",
+      "fit_score": 6.43,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 6.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Prashanth, I came across your profile and was impressed by your excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Prashanth G - Python AWS Developer - Deloitte",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "aws",
+        "pytorch",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    },
+    {
+      "name": "Chandru M",
+      "linkedin_url": "https://in.linkedin.com/in/chandru23",
+      "fit_score": 6.43,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 6.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Chandru, I came across your profile and was impressed by your excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Chandru M - PYTHON AND REACT.JS DEVELOPER",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "pytorch",
+        "react",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    },
+    {
+      "name": "Umesh Soni",
+      "linkedin_url": "https://in.linkedin.com/in/ddumeshsoni",
+      "fit_score": 6.03,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 4.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Umesh, I came across your profile and was impressed by your excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Umesh Soni - Junior Python React Full Stack developer",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "pytorch",
+        "react",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    },
+    {
+      "name": "Umesh Soni",
+      "linkedin_url": "https://in.linkedin.com/in/ddumeshsoni",
+      "fit_score": 6.03,
+      "score_breakdown": {
+        "education": 5.0,
+        "trajectory": 4.0,
+        "company": 5.0,
+        "skills": 9.5,
+        "location": 6.0,
+        "tenure": 5.0
+      },
+      "outreach_message": "Hi Umesh, I came across your profile and was impressed by your excellent skills including python, ai, gin. Your expertise in python, ai, gin aligns perfectly with what we're looking for. Your background shows strong potential for this opportunity. Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team. Looking forward to connecting!",
+      "headline": "Umesh Soni - Junior Python React Full Stack developer",
+      "location": "Unknown",
+      "skills": [
+        "python",
+        "ai",
+        "gin",
+        "tensorflow",
+        "pytorch",
+        "react",
+        "machine learning",
+        "r"
+      ],
+      "companies": [],
+      "education": []
+    }
+  ],
+  "job_description": "\n    Software Engineer, ML Research at Windsurf (Codeium)\n    \n    Windsurf is a Forbes AI 50 company building AI-powered developer tools. We're looking for a Software Engineer to train LLMs for code generation.\n    \n    Requirements:\n    - Experience with machine learning and LLM training\n    - Strong programming skills in Python, PyTorch, TensorFlow\n    - Experience with code generation models\n    - Knowledge of software engineering best practices\n    - Experience with large-scale data processing\n    \n    Location: Mountain View, CA\n    Salary: $140-300k + equity\n    ",
+  "processing_timestamp": "2025-06-29T13:08:42.187046",
+  "scoring_method": "Hackathon Rubric (Education 20%, Trajectory 20%, Company 15%, Skills 25%, Location 10%, Tenure 10%)"
+}

@@ -1,5 +1,6 @@
 """
-Gemini-based outreach message generator
+Enhanced Message Generator for Synapse Hackathon
+Creates personalized outreach messages highlighting candidate characteristics
 """
 import re
 import json
@@ -34,7 +35,7 @@ class MessageGenerator:
     
     def generate_outreach_messages(self, candidates: List[Dict], job_description: str) -> List[Dict]:
         """
-        Generate personalized outreach messages for all candidates
+        Generate personalized outreach messages for candidates
         """
         candidates_with_messages = []
         
@@ -45,7 +46,7 @@ class MessageGenerator:
                 candidates_with_messages.append(candidate)
             except Exception as e:
                 print(f"Error generating message for {candidate.get('name', 'Unknown')}: {e}")
-                # Add fallback message
+                # Fallback message
                 candidate['outreach_message'] = self._generate_fallback_message(candidate, job_description)
                 candidates_with_messages.append(candidate)
         
@@ -55,116 +56,178 @@ class MessageGenerator:
         """
         Generate a personalized message for a single candidate
         """
-        if not self.gemini_client:
-            return self._generate_fallback_message(candidate, job_description)
-        
+        if self.gemini_client:
+            return self._generate_ai_message(candidate, job_description)
+        else:
+            return self._generate_rule_based_message(candidate, job_description)
+    
+    def _generate_ai_message(self, candidate: Dict, job_description: str) -> str:
+        """
+        Generate AI-powered personalized message
+        """
         try:
-            # Prepare candidate data
+            # Extract candidate details
             name = candidate.get('name', 'there')
             headline = candidate.get('headline', '')
             location = candidate.get('location', '')
             skills = candidate.get('skills', [])
             companies = candidate.get('companies', [])
-            experience_level = candidate.get('experience_level', 'mid')
+            education = candidate.get('education', [])
+            fit_score = candidate.get('fit_score', 0)
+            score_breakdown = candidate.get('score_breakdown', {})
             
-            # Get message style based on experience level
-            style = self.message_templates.get(experience_level, self.message_templates['mid'])
-            
-            # Create skills summary
-            skills_summary = ', '.join(skills[:5]) if skills else 'your technical background'
-            
-            # Create company summary
-            company_summary = ''
-            if companies:
-                if len(companies) == 1:
-                    company_summary = f"your experience at {companies[0]}"
-                else:
-                    company_summary = f"your experience at companies like {', '.join(companies[:2])}"
-            
-            # Build prompt
-            prompt = f"""
-Generate a personalized LinkedIn outreach message for {name}, a {headline} based in {location}.
-
-Key details:
-- Skills: {skills_summary}
-- Companies: {company_summary}
-- Experience level: {experience_level}
-
-Job description:
-{job_description}
-
-Message requirements:
-- Tone: {style['tone']}
-- Focus on: {style['focus']}
-- Call-to-action: {style['cta']}
-- Keep under 200 words
-- Be specific to their background
-- Avoid generic templates
-- Start with a personalized greeting
-- Reference their specific experience or skills
-- End with a clear next step
-
-Generate only the message text, no additional formatting.
-"""
+            # Create personalized prompt
+            prompt = self._create_personalization_prompt(
+                name, headline, location, skills, companies, education, 
+                fit_score, score_breakdown, job_description
+            )
             
             response = self.gemini_client.generate_content(prompt)
-            
-            # Clean up the message
-            message = self._clean_message(response.text)
-            
-            return message
+            return response.text.strip()
             
         except Exception as e:
             print(f"AI message generation failed: {e}")
-            return self._generate_fallback_message(candidate, job_description)
+            return self._generate_rule_based_message(candidate, job_description)
     
-    def _generate_fallback_message(self, candidate: Dict, job_description: str) -> str:
+    def _create_personalization_prompt(self, name: str, headline: str, location: str, 
+                                     skills: List[str], companies: List[str], 
+                                     education: List[str], fit_score: float,
+                                     score_breakdown: Dict, job_description: str) -> str:
         """
-        Generate a fallback message when AI is not available
+        Create a detailed prompt for personalized message generation
+        """
+        # Extract top strengths from score breakdown
+        strengths = []
+        for category, score in score_breakdown.items():
+            if score >= 8.0:
+                strengths.append(f"{category} ({score}/10)")
+        
+        # Format candidate details
+        skills_text = ', '.join(skills[:5]) if skills else 'technical skills'
+        companies_text = ', '.join(companies[:3]) if companies else 'previous companies'
+        education_text = ', '.join(education[:2]) if education else 'educational background'
+        
+        prompt = f"""
+You are a professional recruiter reaching out to a potential candidate. Create a personalized LinkedIn outreach message that:
+
+1. Uses the candidate's first name naturally
+2. References specific details from their profile
+3. Explains why they're a great fit for the role
+4. Maintains a professional yet friendly tone
+5. Is concise (150-200 words max)
+
+Candidate Details:
+- Name: {name}
+- Current Role: {headline}
+- Location: {location}
+- Key Skills: {skills_text}
+- Previous Companies: {companies_text}
+- Education: {education_text}
+- Overall Fit Score: {fit_score}/10
+- Top Strengths: {', '.join(strengths) if strengths else 'Strong technical background'}
+
+Job Description:
+{job_description}
+
+Create a compelling, personalized message that highlights their specific qualifications and how they align with this opportunity. Be specific about what makes them stand out.
+"""
+        return prompt
+    
+    def _generate_rule_based_message(self, candidate: Dict, job_description: str) -> str:
+        """
+        Generate rule-based personalized message
         """
         name = candidate.get('name', 'there')
         headline = candidate.get('headline', '')
+        location = candidate.get('location', '')
         skills = candidate.get('skills', [])
         companies = candidate.get('companies', [])
+        education = candidate.get('education', [])
+        fit_score = candidate.get('fit_score', 0)
+        score_breakdown = candidate.get('score_breakdown', {})
         
-        # Extract job title from job description
-        job_title = self._extract_job_title(job_description)
+        # Extract key information for personalization
+        top_skills = skills[:3] if skills else []
+        top_companies = companies[:2] if companies else []
+        top_education = education[:1] if education else []
         
-        # Build fallback message
+        # Find top strengths
+        strengths = []
+        for category, score in score_breakdown.items():
+            if score >= 8.0:
+                if category == 'education' and top_education:
+                    strengths.append(f"strong {category} from {top_education[0]}")
+                elif category == 'company' and top_companies:
+                    strengths.append(f"impressive {category} experience at {top_companies[0]}")
+                elif category == 'skills' and top_skills:
+                    strengths.append(f"excellent {category} including {', '.join(top_skills)}")
+                else:
+                    strengths.append(f"strong {category}")
+        
+        # Build personalized message
         message_parts = []
         
-        # Greeting
-        if name and name.lower() != 'unknown':
-            message_parts.append(f"Hi {name},")
+        # Opening
+        if name and name != 'there':
+            message_parts.append(f"Hi {name.split()[0]},")
         else:
             message_parts.append("Hi there,")
         
-        # Introduction
-        if job_title:
-            message_parts.append(f"I came across your profile and was impressed by your background in {job_title}.")
+        # Personalization based on strengths
+        if strengths:
+            strength_text = ', '.join(strengths)
+            message_parts.append(f"I came across your profile and was impressed by your {strength_text}.")
         else:
-            message_parts.append("I came across your profile and was impressed by your professional background.")
+            message_parts.append("I came across your profile and was impressed by your background.")
         
-        # Specific mention
-        if companies:
-            company_mention = f"Your experience at {companies[0]}"
-            if skills:
-                company_mention += f" and your skills in {', '.join(skills[:3])}"
-            company_mention += " caught my attention."
-            message_parts.append(company_mention)
-        elif skills:
-            message_parts.append(f"Your expertise in {', '.join(skills[:3])} is exactly what we're looking for.")
+        # Company experience mention
+        if top_companies:
+            message_parts.append(f"Your experience at {top_companies[0]} particularly caught my attention.")
         
-        # Job mention
-        message_parts.append("We have an exciting opportunity that I think would be a great fit for your background.")
+        # Skills mention
+        if top_skills:
+            skills_text = ', '.join(top_skills)
+            message_parts.append(f"Your expertise in {skills_text} aligns perfectly with what we're looking for.")
+        
+        # Job fit mention
+        if fit_score >= 8.0:
+            message_parts.append("Based on your background, you'd be an excellent fit for this role.")
+        elif fit_score >= 6.0:
+            message_parts.append("Your background shows strong potential for this opportunity.")
+        else:
+            message_parts.append("I believe your experience could be valuable for this position.")
         
         # Call to action
-        message_parts.append("Would you be interested in connecting to discuss this opportunity?")
+        message_parts.append("Would you be interested in learning more about this opportunity? I'd love to discuss how your skills could contribute to our team.")
         
         # Closing
-        message_parts.append("Looking forward to hearing from you!")
+        message_parts.append("Looking forward to connecting!")
         
-        return " ".join(message_parts)
+        return ' '.join(message_parts)
+    
+    def _generate_fallback_message(self, candidate: Dict, job_description: str) -> str:
+        """
+        Generate a simple fallback message
+        """
+        name = candidate.get('name', 'there')
+        headline = candidate.get('headline', '')
+        
+        if name and name != 'there':
+            first_name = name.split()[0]
+            message = f"Hi {first_name}, I noticed your profile and your experience as {headline}. "
+        else:
+            message = "Hi there, I noticed your profile and your professional experience. "
+        
+        message += "I believe you could be a great fit for an exciting opportunity we have. "
+        message += "Would you be interested in learning more? Looking forward to connecting!"
+        
+        return message
+    
+    def generate_batch_messages(self, candidates: List[Dict], job_description: str) -> List[Dict]:
+        """
+        Generate messages for multiple candidates efficiently
+        """
+        return self.generate_outreach_messages(candidates, job_description)
     
     def _extract_job_title(self, job_description: str) -> str:
         """

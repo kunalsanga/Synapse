@@ -3,14 +3,19 @@ FastAPI entrypoint for the LinkedIn Sourcing Agent
 """
 import json
 import uuid
+import os
 from datetime import datetime
 from typing import List, Dict, Optional
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 import uvicorn
 
-from search import LinkedInSearcher
+# Use enhanced search instead of basic search
+from enhanced_search import EnhancedLinkedInSearcher
 from parser import CandidateParser
 from scorer import CandidateScorer
 from messenger import MessageGenerator
@@ -32,8 +37,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize components
-searcher = LinkedInSearcher()
+# Setup templates and static files
+templates = Jinja2Templates(directory="templates")
+
+# Initialize components with enhanced search
+searcher = EnhancedLinkedInSearcher()
 parser = CandidateParser()
 scorer = CandidateScorer()
 messenger = MessageGenerator()
@@ -64,16 +72,22 @@ class MatchResponse(BaseModel):
 # In-memory storage for results (in production, use a proper database)
 job_results = {}
 
-@app.get("/")
-async def root():
-    """Health check endpoint"""
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    """Serve the main web interface"""
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/api")
+async def api_info():
+    """API information endpoint"""
     return {
-        "message": "LinkedIn Sourcing Agent is running",
+        "message": "LinkedIn Sourcing Agent API is running",
         "version": "1.0.0",
         "endpoints": {
             "POST /match": "Find and score candidates for a job description",
             "GET /health": "Health check",
-            "GET /results/{job_id}": "Get results for a specific job"
+            "GET /results/{job_id}": "Get results for a specific job",
+            "GET /stats": "Application statistics"
         }
     }
 
@@ -203,39 +217,38 @@ async def match_candidates(request: JobRequest, background_tasks: BackgroundTask
 
 @app.get("/results/{job_id}")
 async def get_job_results(job_id: str):
-    """
-    Get results for a specific job ID
-    """
+    """Get results for a specific job"""
     if job_id not in job_results:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Job results not found for ID: {job_id}"
-        )
+        raise HTTPException(status_code=404, detail="Job not found")
     
     return job_results[job_id]
 
 @app.get("/stats")
 async def get_stats():
-    """
-    Get application statistics
-    """
+    """Get application statistics"""
+    total_jobs = len(job_results)
+    total_candidates = sum(
+        result["response"]["candidates_found"] 
+        for result in job_results.values()
+    )
+    avg_candidates = total_candidates / total_jobs if total_jobs > 0 else 0
+    
     return {
-        "total_jobs_processed": len(job_results),
-        "recent_jobs": list(job_results.keys())[-5:],  # Last 5 jobs
-        "gemini_configured": bool(config.GEMINI_API_KEY),
-        "max_candidates_per_search": config.MAX_CANDIDATES_PER_SEARCH
+        "total_jobs": total_jobs,
+        "total_candidates": total_candidates,
+        "avg_candidates_per_job": round(avg_candidates, 1),
+        "uptime": "Running",
+        "last_updated": datetime.now().isoformat()
     }
 
 def save_results_to_file(job_id: str):
-    """
-    Save results to JSON file (background task)
-    """
+    """Save results to JSON file"""
     try:
         if job_id in job_results:
-            with open(config.DATA_FILE, 'w') as f:
+            with open("data.json", "w") as f:
                 json.dump(job_results, f, indent=2)
     except Exception as e:
-        print(f"Error saving results to file: {e}")
+        print(f"Error saving results: {e}")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
@@ -246,14 +259,117 @@ async def global_exception_handler(request, exc):
         "timestamp": datetime.now().isoformat()
     }
 
+@app.post("/api/hackathon", response_model=Dict)
+async def hackathon_endpoint(request: JobRequest):
+    """
+    Hackathon-specific endpoint that returns top 10 candidates with personalized outreach
+    Returns the exact format required for the competition
+    """
+    try:
+        # Generate job ID
+        job_id = request.job_id or f"hackathon-{uuid.uuid4().hex[:8]}"
+        
+        print(f"Processing hackathon request for job ID: {job_id}")
+        
+        # Step 1: Search for LinkedIn profiles
+        print("Step 1: Searching for LinkedIn profiles...")
+        raw_profiles = searcher.search_linkedin_profiles(
+            request.job_description, 
+            10  # Always return top 10 for hackathon
+        )
+        
+        if not raw_profiles:
+            return {
+                "job_id": job_id,
+                "candidates_found": 0,
+                "top_candidates": [],
+                "error": "No LinkedIn profiles found for the given job description"
+            }
+        
+        print(f"Found {len(raw_profiles)} raw profiles")
+        
+        # Step 2: Parse and enrich candidate data
+        print("Step 2: Parsing and enriching candidate data...")
+        enriched_candidates = parser.parse_candidates(raw_profiles, request.job_description)
+        
+        if not enriched_candidates:
+            return {
+                "job_id": job_id,
+                "candidates_found": 0,
+                "top_candidates": [],
+                "error": "Failed to parse candidate data"
+            }
+        
+        print(f"Enriched {len(enriched_candidates)} candidates")
+        
+        # Step 3: Score candidates using hackathon rubric
+        print("Step 3: Scoring candidates using hackathon rubric...")
+        scored_candidates = scorer.score_candidates(enriched_candidates, request.job_description)
+        
+        print(f"Scored {len(scored_candidates)} candidates")
+        
+        # Step 4: Generate personalized outreach messages
+        print("Step 4: Generating personalized outreach messages...")
+        candidates_with_messages = messenger.generate_outreach_messages(
+            scored_candidates, 
+            request.job_description
+        )
+        
+        print(f"Generated messages for {len(candidates_with_messages)} candidates")
+        
+        # Step 5: Prepare hackathon response format
+        top_candidates = candidates_with_messages[:10]  # Top 10 candidates
+        
+        # Convert to hackathon format
+        hackathon_candidates = []
+        for candidate in top_candidates:
+            hackathon_candidate = {
+                "name": candidate.get('name', 'Unknown'),
+                "linkedin_url": candidate.get('linkedin_url', ''),
+                "fit_score": candidate.get('fit_score', 0.0),
+                "score_breakdown": candidate.get('score_breakdown', {}),
+                "outreach_message": candidate.get('outreach_message', ''),
+                "headline": candidate.get('headline', ''),
+                "location": candidate.get('location', ''),
+                "skills": candidate.get('skills', []),
+                "companies": candidate.get('companies', []),
+                "education": candidate.get('education', [])
+            }
+            hackathon_candidates.append(hackathon_candidate)
+        
+        # Prepare hackathon response
+        response = {
+            "job_id": job_id,
+            "candidates_found": len(hackathon_candidates),
+            "top_candidates": hackathon_candidates,
+            "job_description": request.job_description,
+            "processing_timestamp": datetime.now().isoformat(),
+            "scoring_method": "Hackathon Rubric (Education 20%, Trajectory 20%, Company 15%, Skills 25%, Location 10%, Tenure 10%)"
+        }
+        
+        # Store results
+        job_results[job_id] = {
+            "request": request.dict(),
+            "response": response,
+            "timestamp": datetime.now().isoformat(),
+            "type": "hackathon"
+        }
+        
+        print(f"Successfully processed hackathon request {job_id} with {len(hackathon_candidates)} candidates")
+        
+        return response
+        
+    except Exception as e:
+        print(f"Error in hackathon endpoint: {e}")
+        return {
+            "job_id": job_id if 'job_id' in locals() else "error",
+            "candidates_found": 0,
+            "top_candidates": [],
+            "error": str(e)
+        }
+
 if __name__ == "__main__":
     print("Starting LinkedIn Sourcing Agent...")
-    print(f"Gemini API configured: {bool(config.GEMINI_API_KEY)}")
-    print(f"Server will run on {config.HOST}:{config.PORT}")
-    
-    uvicorn.run(
-        "main:app",
-        host=config.HOST,
-        port=config.PORT,
-        reload=True
-    ) 
+    print("Gemini API configured:", bool(config.GEMINI_API_KEY))
+    print("Server will run on 0.0.0.0:8000")
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 

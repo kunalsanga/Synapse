@@ -38,35 +38,35 @@ class LinkedInSearcher:
         """Return mock profiles for demonstration when Google search fails"""
         mock_profiles = [
             {
-                'linkedin_url': 'https://linkedin.com/in/sarah-johnson-ai',
+                'linkedin_url': 'https://www.linkedin.com/in/sarah-johnson-ai',
                 'name': 'Sarah Johnson',
                 'headline': 'Senior Software Engineer at Google',
                 'location': 'San Francisco, CA',
                 'confidence': 0.9
             },
             {
-                'linkedin_url': 'https://linkedin.com/in/mike-chen-dev',
+                'linkedin_url': 'https://www.linkedin.com/in/mike-chen-dev',
                 'name': 'Mike Chen',
                 'headline': 'Lead Python Developer at Microsoft',
                 'location': 'Seattle, WA',
                 'confidence': 0.8
             },
             {
-                'linkedin_url': 'https://linkedin.com/in/emma-rodriguez-eng',
+                'linkedin_url': 'https://www.linkedin.com/in/emma-rodriguez-eng',
                 'name': 'Emma Rodriguez',
                 'headline': 'Full Stack Engineer at Amazon',
                 'location': 'Austin, TX',
                 'confidence': 0.85
             },
             {
-                'linkedin_url': 'https://linkedin.com/in/david-kim-aws',
+                'linkedin_url': 'https://www.linkedin.com/in/david-kim-aws',
                 'name': 'David Kim',
                 'headline': 'Cloud Solutions Architect at AWS',
                 'location': 'New York, NY',
                 'confidence': 0.9
             },
             {
-                'linkedin_url': 'https://linkedin.com/in/lisa-wang-ml',
+                'linkedin_url': 'https://www.linkedin.com/in/lisa-wang-ml',
                 'name': 'Lisa Wang',
                 'headline': 'Machine Learning Engineer at Meta',
                 'location': 'Palo Alto, CA',
