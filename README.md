@@ -11,6 +11,9 @@ An intelligent AI agent that automatically finds, scores, and generates personal
 - **📈 Caching**: Intelligent caching to avoid duplicate searches
 - **🎯 Batch Processing**: Support for multiple job descriptions
 
+## Preview
+ ![](https://github.com/kunalsanga/Synapse/blob/main/Screenshot%202025-06-29%20160023.png)
+
 ## 🏗️ Architecture
 
 ```
